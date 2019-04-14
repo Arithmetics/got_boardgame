@@ -1,15 +1,17 @@
 package controllers
 
 import (
-	"net/http"
-	u "go-contacts/utils"
-	"go-contacts/models"
 	"encoding/json"
+	"net/http"
+
+	"github.com/arithmetics/got_boardgame/models"
+	u "github.com/arithmetics/got_boardgame/utils"
 )
 
-var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
+// CreateAccount ...
+func CreateAccount(w http.ResponseWriter, r *http.Request) {
 
-	account := &models.Account{}
+	account := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))
@@ -20,9 +22,10 @@ var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var Authenticate = func(w http.ResponseWriter, r *http.Request) {
+// Authenticate ...
+func Authenticate(w http.ResponseWriter, r *http.Request) {
 
-	account := &models.Account{}
+	account := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))
@@ -32,4 +35,3 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 	resp := models.Login(account.Email, account.Password)
 	u.Respond(w, resp)
 }
-
