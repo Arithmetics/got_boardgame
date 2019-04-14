@@ -40,7 +40,7 @@ func (user *User) Validate() (map[string]interface{}, bool) {
 	temp := &User{}
 
 	//check for errors and duplicate emails
-	err := GetDB().Table("accounts").Where("email = ?", user.Email).First(temp).Error
+	err := GetDB().Table("users").Where("email = ?", user.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return u.Message(false, "Connection error. Please retry"), false
 	}
@@ -64,10 +64,10 @@ func (user *User) Create() map[string]interface{} {
 	GetDB().Create(user)
 
 	if user.ID <= 0 {
-		return u.Message(false, "Failed to create account, connection error.")
+		return u.Message(false, "Failed to create user, connection error.")
 	}
 
-	//Create new JWT token for the newly registered account
+	//Create new JWT token for the newly registered user
 	tk := &Token{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
@@ -75,16 +75,16 @@ func (user *User) Create() map[string]interface{} {
 
 	user.Password = "" //delete password
 
-	response := u.Message(true, "Account has been created")
-	response["account"] = user
+	response := u.Message(true, "User has been created")
+	response["user"] = user
 	return response
 }
 
 // Login logs the user in
 func Login(email, password string) map[string]interface{} {
 
-	account := &User{}
-	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
+	user := &User{}
+	err := GetDB().Table("users").Where("email = ?", email).First(user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return u.Message(false, "Email address not found")
@@ -92,33 +92,33 @@ func Login(email, password string) map[string]interface{} {
 		return u.Message(false, "Connection error. Please retry")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
 		return u.Message(false, "Invalid login credentials. Please try again")
 	}
 	//Worked! Logged In
-	account.Password = ""
+	user.Password = ""
 
 	//Create JWT token
-	tk := &Token{UserID: account.ID}
+	tk := &Token{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
-	account.Token = tokenString //Store the token in the response
+	user.Token = tokenString //Store the token in the response
 
 	resp := u.Message(true, "Logged In")
-	resp["account"] = account
+	resp["user"] = user
 	return resp
 }
 
 // GetUser grabs a user by ID
 func GetUser(u uint) *User {
 
-	acc := &User{}
-	GetDB().Table("accounts").Where("id = ?", u).First(acc)
-	if acc.Email == "" { //User not found!
+	user := &User{}
+	GetDB().Table("users").Where("id = ?", u).First(user)
+	if user.Email == "" { //User not found!
 		return nil
 	}
 
-	acc.Password = ""
-	return acc
+	user.Password = ""
+	return user
 }
