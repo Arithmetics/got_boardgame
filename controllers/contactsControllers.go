@@ -8,7 +8,7 @@ import (
 	u "github.com/arithmetics/got_boardgame/utils"
 )
 
-// CreateContact cre
+// CreateContact creates a contact
 func CreateContact(w http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
@@ -32,5 +32,12 @@ func GetContactsFor(w http.ResponseWriter, r *http.Request) {
 	data := models.GetContacts(id)
 	resp := u.Message(true, "success")
 	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// Test ii
+func Test(w http.ResponseWriter, r *http.Request) {
+	resp := u.Message(true, "success")
+	resp["data"] = "backend connected"
 	u.Respond(w, resp)
 }

@@ -24,7 +24,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 // Authenticate ...
 func Authenticate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user) //decode the request body into struct and failed if any error occur
 	if err != nil {
