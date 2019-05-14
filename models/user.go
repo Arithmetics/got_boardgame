@@ -20,12 +20,15 @@ type Token struct {
 // User is the users account
 type User struct {
 	gorm.Model
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Token    string `json:"token" sql:"-"`
+	Email        string `json:"email"`
+	Password     string `json:"password"`
+	Token        string `json:"token" sql:"-"`
+	Rank         string
+	CreatedGames []Game `gorm:"foreignkey:UserCreator"`
+	JoinedGames  []Game `gorm:"many2many:joined_games"`
 }
 
-//Validate incoming user details...
+//Validate incoming user details..
 func (user *User) Validate() (map[string]interface{}, bool) {
 
 	if !strings.Contains(user.Email, "@") {
@@ -114,7 +117,7 @@ func Login(email, password string) map[string]interface{} {
 func GetUser(u uint) *User {
 
 	user := &User{}
-	GetDB().Table("users").Where("id = ?", u).First(user)
+	GetDB().Preload("games").Table("users").Where("id = ?", u).First(user)
 	if user.Email == "" { //User not found!
 		return nil
 	}

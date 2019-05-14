@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/arithmetics/got_boardgame/models"
@@ -37,6 +38,7 @@ func GetContactsFor(w http.ResponseWriter, r *http.Request) {
 
 // Test ii
 func Test(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("%+v", "sdfdsf")
 	resp := u.Message(true, "success")
 	resp["data"] = "backend connected"
 	u.Respond(w, resp)
