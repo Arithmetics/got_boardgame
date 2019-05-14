@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/arithmetics/got_boardgame/models"
@@ -10,7 +9,6 @@ import (
 
 // GetUser ...
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("xxxxxxx")
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
 	(w).Header().Set("Access-Control-Allow-Methods", "*")
 	(w).Header().Set("Access-Control-Allow-Headers", "*")

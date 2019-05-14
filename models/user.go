@@ -117,7 +117,7 @@ func Login(email, password string) map[string]interface{} {
 func GetUser(u uint) *User {
 
 	user := &User{}
-	GetDB().Preload("games").Table("users").Where("id = ?", u).First(user)
+	GetDB().Preload("CreatedGames").Table("users").Where("id = ?", u).First(user)
 	if user.Email == "" { //User not found!
 		return nil
 	}

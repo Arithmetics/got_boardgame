@@ -6,6 +6,7 @@ import (
 	u "github.com/arithmetics/got_boardgame/utils"
 )
 
+// NotFoundHandler responds to bad requests
 var NotFoundHandler = func(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
