@@ -8,7 +8,14 @@ import (
 )
 
 // GetUser ...
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetGame(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+
+	if r.Method == "OPTIONS" {
+		return
+	}
 
 	id := r.Context().Value("user").(uint)
 	data := models.GetUser(id)

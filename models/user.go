@@ -24,8 +24,8 @@ type User struct {
 	Password     string `json:"password"`
 	Token        string `json:"token" sql:"-"`
 	Rank         string
-	CreatedGames []Game `gorm:"foreignkey:UserCreator"`
-	JoinedGames  []Game `gorm:"many2many:joined_games"`
+	CreatedGames []Game `gorm:"foreignkey:UserCreator" json:"createdGames"`
+	JoinedGames  []Game `gorm:"many2many:joined_games" json:"joinedGames"`
 }
 
 //Validate incoming user details..
@@ -117,7 +117,7 @@ func Login(email, password string) map[string]interface{} {
 func GetUser(u uint) *User {
 
 	user := &User{}
-	GetDB().Preload("CreatedGames").Table("users").Where("id = ?", u).First(user)
+	GetDB().Preload("CreatedGames").Preload("JoinedGames").Table("users").Where("id = ?", u).First(user)
 	if user.Email == "" { //User not found!
 		return nil
 	}

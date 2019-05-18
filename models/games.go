@@ -11,13 +11,13 @@ import (
 //Game struct (FirstGame, SecondGame, etc...)
 type Game struct {
 	gorm.Model
-	UserCreator uint
-	Players     []User `gorm:"many2many:joined_games"`
-	Name        string
-	Active      bool
-	Factions    []Faction
-	Tracks      []Track
-	GameState   string
+	UserCreator uint      `json:"userCreator"`
+	Players     []User    `gorm:"many2many:joined_games" json:"players"`
+	Name        string    `json:"name"`
+	Active      bool      `json:"active"`
+	Factions    []Faction `json:"factions"`
+	Tracks      []Track   `json:"tracks"`
+	GameState   string    `json:"gameState"`
 }
 
 // AssignFactions creates a faction for each user in the game
