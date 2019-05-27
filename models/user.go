@@ -115,9 +115,27 @@ func Login(email, password string) map[string]interface{} {
 
 // GetUser grabs a user by ID
 func GetUser(u uint) *User {
-
 	user := &User{}
-	GetDB().Preload("CreatedGames").Preload("JoinedGames").Table("users").Where("id = ?", u).First(user)
+	GetDB().Preload("JoinedGames.Players").Table("users").Where("id = ?", u).First(user)
+	if user.Email == "" { //User not found!
+		return nil
+	}
+
+	for i := range user.JoinedGames {
+		for j := range user.JoinedGames[i].Players {
+			user.JoinedGames[i].Players[j].Password = ""
+			user.JoinedGames[i].Players[j].Token = ""
+		}
+	}
+
+	user.Password = ""
+	return user
+}
+
+// GetUserSimple is used to get a shallow user
+func GetUserSimple(u uint) *User {
+	user := &User{}
+	GetDB().Table("users").Where("id = ?", u).First(user)
 	if user.Email == "" { //User not found!
 		return nil
 	}

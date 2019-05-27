@@ -18,10 +18,8 @@ func main() {
 	router.HandleFunc("/api/user/new", controllers.CreateUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/user/me", controllers.GetUser).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
-	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
-	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
+	router.HandleFunc("/api/game/new", controllers.CreateGame).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/game/{id}", controllers.GetGame).Methods("GET")
-	router.HandleFunc("/api/test", controllers.Test).Methods("GET")
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 

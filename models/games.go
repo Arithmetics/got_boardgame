@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	u "github.com/arithmetics/got_boardgame/utils"
 	"github.com/jinzhu/gorm"
 )
 
@@ -18,6 +19,45 @@ type Game struct {
 	Factions    []Faction `json:"factions"`
 	Tracks      []Track   `json:"tracks"`
 	GameState   string    `json:"gameState"`
+}
+
+//Validate incoming game details..
+func (game *Game) Validate() (map[string]interface{}, bool) {
+
+	if len(game.Name) < 1 {
+		return u.Message(false, "Game name not long enough"), false
+	}
+
+	return u.Message(false, "Requirement passed"), true
+}
+
+// Create makes a new game in the db
+func (game *Game) Create() map[string]interface{} {
+
+	if resp, ok := game.Validate(); !ok {
+		return resp
+	}
+
+	if err := game.CreateTracks(); err != nil {
+		return u.Message(false, "Error creating tracks")
+	}
+
+	GetDB().Create(game)
+
+	if game.ID <= 0 {
+		return u.Message(false, "Failed to create game, connection error.")
+	}
+
+	response := u.Message(true, "Game has been created")
+	response["game"] = game
+	return response
+}
+
+// GetGame grabs a game by ID
+func GetGame(u string) *Game {
+	game := Game{}
+
+	return &game
 }
 
 // AssignFactions creates a faction for each user in the game
@@ -46,7 +86,7 @@ func (game Game) AssignFactions(db *gorm.DB) error {
 }
 
 // CreateTracks is part of the start up sequernce. Creates tracks for a game in their default state
-func (game Game) CreateTracks(db *gorm.DB) error {
+func (game Game) CreateTracks() error {
 	track1 := Track{
 		Name:        "IronThrone",
 		GameID:      game.ID,
@@ -63,9 +103,9 @@ func (game Game) CreateTracks(db *gorm.DB) error {
 		BiddingOpen: false,
 	}
 
-	db.Create(&track1)
-	db.Create(&track2)
-	db.Create(&track3)
+	GetDB().Create(&track1)
+	GetDB().Create(&track2)
+	GetDB().Create(&track3)
 
 	return nil
 }
