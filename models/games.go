@@ -38,14 +38,14 @@ func (game *Game) Create() map[string]interface{} {
 		return resp
 	}
 
-	if err := game.CreateTracks(); err != nil {
-		return u.Message(false, "Error creating tracks")
-	}
-
 	GetDB().Create(game)
 
 	if game.ID <= 0 {
 		return u.Message(false, "Failed to create game, connection error.")
+	}
+
+	if err := game.CreateTracks(); err != nil {
+		return u.Message(false, "Error creating tracks")
 	}
 
 	response := u.Message(true, "Game has been created")
