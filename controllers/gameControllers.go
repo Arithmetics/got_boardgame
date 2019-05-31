@@ -3,14 +3,22 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/arithmetics/got_boardgame/models"
 	u "github.com/arithmetics/got_boardgame/utils"
+	"github.com/gorilla/mux"
 )
 
 // GetGame ...
 func GetGame(w http.ResponseWriter, r *http.Request) {
-
+	vars := mux.Vars(r)
+	gameID := vars["id"]
+	u64, _ := strconv.ParseUint(gameID, 10, 32)
+	data := models.GetGame(uint(u64))
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
 }
 
 // CreateGame ...

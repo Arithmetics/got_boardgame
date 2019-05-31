@@ -53,11 +53,27 @@ func (game *Game) Create() map[string]interface{} {
 	return response
 }
 
-// GetGame grabs a game by ID
-func GetGame(u string) *Game {
-	game := Game{}
+// ClearPasswords clears passwords that may be included for a game players
+func (game *Game) ClearPasswords() {
+	for i := range game.Players {
+		game.Players[i].ClearPassword()
+	}
+}
 
-	return &game
+// GetGame grabs a game by ID
+func GetGame(u uint) *Game {
+	game := &Game{}
+	GetDB().Preload("Tracks").Preload("Factions").Preload("Players").Table("games").Where("id = ?", u).First(game)
+	if game.Name == "" { //Game not found!
+		return nil
+	}
+
+	for i := range game.Players {
+		game.Players[i].Password = ""
+		game.Players[i].Token = ""
+	}
+
+	return game
 }
 
 // AssignFactions creates a faction for each user in the game

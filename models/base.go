@@ -34,7 +34,7 @@ func init() {
 	}
 
 	db = conn
-	db.Debug().AutoMigrate(&User{}, &Game{}, &Track{})
+	db.Debug().AutoMigrate(&User{}, &Game{}, &Track{}, &Faction{})
 }
 
 // GetDB grabs the db and returns it ready to use

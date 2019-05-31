@@ -83,6 +83,11 @@ func (user *User) Create() map[string]interface{} {
 	return response
 }
 
+// ClearPassword removes password from user before returning to front end
+func (user *User) ClearPassword() {
+	user.Password = ""
+}
+
 // Login logs the user in
 func Login(email, password string) map[string]interface{} {
 
