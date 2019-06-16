@@ -140,3 +140,21 @@ func shuffle(vals []string) []string {
 	}
 	return ret
 }
+
+// DeleteGame deletes a game by ID
+func DeleteGame(gameID uint, deleterID uint) bool {
+	game := &Game{}
+	db := GetDB()
+	db.Table("games").Where("id = ?", gameID).First(game)
+	if game.Name == "" { //Game not found!
+		return false
+	}
+
+	if game.UserCreator != deleterID {
+		return false
+	}
+
+	db.Delete(game)
+
+	return true
+}

@@ -10,6 +10,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// DeleteGame will delete a game based on id and whether the user is the creator, will also need to add a check to not allow if the game has begun
+func DeleteGame(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["id"]
+	u64, _ := strconv.ParseUint(gameID, 10, 32)
+	deleterID := r.Context().Value("user").(uint)
+
+	data := models.DeleteGame(uint(u64), deleterID)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 // GetGame ...
 func GetGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
