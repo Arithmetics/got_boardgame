@@ -83,7 +83,7 @@ func (game Game) AssignFactions(db *gorm.DB) error {
 		return fmt.Errorf("Not enough players to start this game")
 	}
 
-	factionNames := []string{"Stark", "Greyjoy", "Lannister", "Barratheon", "Martell", "Tyrell"}
+	factionNames := []string{"Stark", "Greyjoy", "Lannister", "Barratheon", "Martell", "Tyrell", "Bolton"}
 
 	factionNames = shuffle(factionNames)
 
